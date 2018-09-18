@@ -1,0 +1,29 @@
+version: '2'
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: track.mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: track-db
+      MYSQL_USER: nodeUser
+      MYSQL_PASSWORD: 1
+    ports:
+      - 3307:3306
+  adminer:
+    build:
+      dockerfile: build/adminer/Dockerfile
+      context: .
+    container_name: track.adminer
+    environment:
+      DB_HOST: mysql
+      DB_USER: nodeUser
+      DB_PASS: 1
+    volumes:
+      - ./build/adminer/index.php:/var/www/html/index.php:ro
+    ports:
+      - 3308:80
+    links:
+      - mysql
+    logging:
+      driver: none
