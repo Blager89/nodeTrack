@@ -33,6 +33,36 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+  const error = {
+    error: {
+      code: 500,
+      message: '',
+      status: '',
+      details: []
+    }
+  };
+
+  switch (err.constructor.name) {
+    case 'Errors':
+      error.error.code = 400;
+      error.error.details = err.errors;
+      error.error.message = 'validation errors';
+      break;
+    case 'Error':
+      error.error.code = 500;
+      error.error.details = err.errors;
+      error.error.message = 'something wrong';
+      console.log(err);
+      break;
+    case 'ClientError':
+      error.error.code = 404;
+      error.error.details = err.errors;
+      error.error.message = err.message;
+      break;
+
+  }
+
+
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
